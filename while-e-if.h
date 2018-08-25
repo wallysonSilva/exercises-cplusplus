@@ -11,7 +11,7 @@ This number should always be odd.
 using namespace std;
 
 int main (){
-    int entrada, q_linhas //quantidade de linhas
+    int entrada, q_linhas; //quantidade de linhas
     int espacos, linha_atual(0), imprima(0);
 
     cout <<"Digite o valor maximo que voce deseja\nlembre-se que ele deve ser impar\n";
@@ -22,17 +22,14 @@ int main (){
         if(linha_atual>0){
             espacos = linha_atual*2;
 
-            while(espacos!=0){
+            while(espacos--!=0){
                 cout<<" ";
-                espacos--;
             }
              if(linha_atual>9){
                 espacos = linha_atual-9;
 
-                while(espacos!=0){
-                cout<<" ";
-                espacos--;
-
+                while(espacos--!=0){
+                    cout<<" ";
                 }
              }
         }
