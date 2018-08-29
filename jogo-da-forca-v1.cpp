@@ -1,38 +1,36 @@
-/* hangman game to play with the computer. The game has 3 levels.
-The gamer chooses the level and the word is sorted.
-OBS: the words be the portuguese */
+/* hangman game to play with the computer. The game has 3 levels. The gamer chooses the level and the word is sorted. OBS: the words be in portuguese */
 #include <iostream>
 #include <string>
 #include <cstdlib>
 #include <ctime>
 #include <stdlib.h>
+#include <string.h>
 using namespace std;
-int jogabilidade(int TENTATIVAS, int VITORIA, int tamanho_palavra, string name_user);
+int jogabilidade(int TENTATIVAS, int VITORIA, int tamanho_palavra, string name_user, int nivel);
 int main(){
     string name_user;
     int level, V;
-    //primeira parte: interação com usuario
+    //primeira parte: interação inicial com o usuario
     cout<<"Ola, bem vindo ao jogo da forca!\nComo voce se chama?\n";
     getline (cin, name_user);
-    //segunda parte: escolha da dificuldade
+    //segunda parte: escolha da dificuldade pelo usuario
     cout<<'\n'<<name_user<<", escolha a dificuldade:\n[1] Facil, [2] Medio e [3] Dificil: ";
     cin>>level;
-
     switch(level){
 		//NIVEL FACIL //NIVEL FACIL //NIVEL FACIL //NIVEL FACIL //NIVEL FACIL //NIVEL FACIL //NIVEL FACIL //NIVEL FACIL //NIVEL FACIL //NIVEL FACIL //NIVEL FACIL
         case 1:
-            V=jogabilidade(10, 0, 5, name_user);
+            V=jogabilidade(10, 0, 5, name_user, 1);
 			break;
         //NIVEL MEDIO //NIVEL MEDIO //NIVEL MEDIO //NIVEL MEDIO //NIVEL MEDIO //NIVEL MEDIO //NIVEL MEDIO //NIVEL MEDIO //NIVEL MEDIO //NIVEL MEDIO //NIVEL MEDIO
 		case 2:
-            V=jogabilidade(12, 0, 7, name_user);
+            V=jogabilidade(12, 0, 7, name_user, 2);
             break;
         //NIVEL DIFICIL NIVEL DIFICIL NIVEL DIFICIL NIVEL DIFICIL NIVEL DIFICIL NIVEL DIFICIL NIVEL DIFICIL NIVEL DIFICIL NIVEL DIFICIL NIVEL DIFICIL NIVEL DIFICIL
         case 3:
-            V=jogabilidade(15, 0, 10, name_user);
+            V=jogabilidade(15, 0, 10, name_user, 3);
             break;
     }
-	//quinta parte: fim-> derrota ou vitória
+	//Fim-> derrota ou vitória
     if((level==1 && V==5) || (level==2 && V==7) || (level==3 && V==10)){
          cout<<"\n\n\n\nParabens "<<name_user<<", vc venceu!\n\n";
          cout<<"..........WW....*..**..*\n";
@@ -58,121 +56,51 @@ int main(){
     system("pause");
 	return 0;
 }
-int jogabilidade(int TENTATIVAS, int VITORIA, int tamanho_palavra, string name_user){
+////Terceira parte: função da jogabilidade
+int jogabilidade(int TENTATIVAS, int VITORIA, int tamanho_palavra, string name_user, int nivel){
     int acerto;
-    string letra;
+    char letra;
+    char vetor_auxiliar[tamanho_palavra];//ESTE VETOR AUXILIAR SERVE PARA IR REVELANDO AS LETRAS CONFORME O USUARIO AS ACERTA
+    string palavra_de_acordo_com_nivel[1];//NESTE VETOR SERÁ GUARDADA A PALAVRA SORTEADA. E DEPOIS A TRANSFORMAREMOS EM UMA VARIAVEL DO TIPO CHAR
     //palavras do nível fácil
-    string facil_1[5]={"p", "e", "i", "x", "e"}, facil_2[5]={"z", "e", "b", "r", "a"}, facil_3[5]={"p", "o", "r", "c", "o"}, facil_4[5]={"t", "i", "g", "r", "e"}, facil_5[5]={"a", "r", "a", "r", "a"};
+    string facil[5]={"peixe", "zebra", "porco", "tigre", "arara"};
     //palavras do nível médio
-    string medio_1[7]={"s", "u", "b", "l", "i", "m", "e"}, medio_2[7]={"e", "m", "o", "t", "i", "v", "o"}, medio_3[7]={"v", "i", "r", "t", "u", "d", "e"}, medio_4[7]={"b", "i", "z", "a", "r", "r", "o"}, medio_5[7]={"e", "x", "i", "l", "a", "d", "o"};
+    string medio[5]={"sublime", "emotivo", "virtude", "bizarro", "exilado"};
     //palavras do nível difícil
-	string dificil_1[10]={"c", "o", "r", "r", "o", "b", "o", "r", "a", "r"}, dificil_2[10]={"d", "e", "t", "r", "i", "m", "e", "n", "t", "o"}, dificil_3[10]={"s", "a", "g", "a", "c", "i", "d", "a", "d", "e"}, dificil_4[10]={"p", "r", "e", "l", "i", "m", "i", "n", "a", "r"}, dificil_5[10]={"p", "e", "r", "t", "i", "n", "e", "n", "t", "e"};
-    //terceira parte: sorteio da palavra
-    //ESTE CODIGO SORTEIA UM NUMERO ALEATORIO DE 1 A 5. ESSE NUMERO IRÁ NOS AUXILIAR NO SORTEIO DA PALAVRA
+	string dificil[5]={"corroborar", "detrimento", "sagacidade", "preliminar", "pertinente"};
+    //ESTE CODIGO SORTEIA UM NUMERO ALEATORIO DE 0 A 4. ESSE NUMERO IRÁ NOS AUXILIAR NO SORTEIO DA PALAVRA
     srand((unsigned)time(0)); //para gerar números aleatórios reais.
-    int maior = 5;
-    int menor = 1;
+    int maior = 4;
+    int menor = 0;
     int aleatorio = rand()%(maior-menor+1)+menor;
-    ////////////
-    string vetor_auxiliar[tamanho_palavra]=" _ ";
-    string palavra_selecionada[tamanho_palavra];
-    //SORTEIO DA PALAVRA DE ACORDO COM A DIFICULDADE
-    if(tamanho_palavra==5){
-        if(aleatorio==1){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=facil_1[i];
-            }
-        }
-        if(aleatorio==2){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=facil_2[i];
-            }
-        }
-        if(aleatorio==3){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=facil_3[i];
-            }
-        }
-        if(aleatorio==4){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=facil_4[i];
-            }
-        }
-        if(aleatorio==5){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=facil_5[i];
-            }
-        }
+    /////SORTEIO DA PALAVRA DE ACORDO COM A DIFICULDADE ESCOLHIDA PELO JOGADOR//////
+    if(nivel==1){
+        palavra_de_acordo_com_nivel[0]=facil[aleatorio];
     }
-    if(tamanho_palavra==7){
-        if(aleatorio==1){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=medio_1[i];
-            }
-        }
-        if(aleatorio==2){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=medio_2[i];
-            }
-        }
-        if(aleatorio==3){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=medio_3[i];
-            }
-        }
-        if(aleatorio==4){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=medio_4[i];
-            }
-        }
-        if(aleatorio==5){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=medio_5[i];
-            }
-        }
+    else if(nivel==2){
+        palavra_de_acordo_com_nivel[0]=medio[aleatorio];
     }
-    if(tamanho_palavra==10){
-        if(aleatorio==1){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=dificil_1[i];
-            }
-        }
-        if(aleatorio==2){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=dificil_2[i];
-            }
-        }
-        if(aleatorio==3){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=dificil_3[i];
-            }
-        }
-        if(aleatorio==4){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=dificil_4[i];
-            }
-        }
-        if(aleatorio==5){
-            for(int i=0; i<tamanho_palavra; i++){
-                   palavra_selecionada[i]=dificil_5[i];
-            }
-        }
+    else if(nivel==3){
+        palavra_de_acordo_com_nivel[0]=dificil[aleatorio];
     }
+    ///////ESTE CODIGO TRANSFORMA A PALAVRA SORTEADA, QUE É UMA VARIAVEL STRING, EM UMA VARIAVEL CHAR//////////////
+    char strring_que_vira_cchar[tamanho_palavra];
+    strncpy (strring_que_vira_cchar, palavra_de_acordo_com_nivel[0].c_str(), sizeof(strring_que_vira_cchar));
     //////////////////INICIO/////////////////////////////
     cout<<"\n\n"<<name_user<<", voce tem "<<TENTATIVAS<<" tentativas\n\n";
     for(int i=0; i<tamanho_palavra; i++){
-        cout<<vetor_auxiliar[i];
+        vetor_auxiliar[i]='_';
+        cout<<vetor_auxiliar[i]<<" ";
     }
     cout<<"\n\n";
     while(TENTATIVAS-->0 && ( (tamanho_palavra==5 && VITORIA!=5) || (tamanho_palavra==7 && VITORIA!=7) || (tamanho_palavra==10 && VITORIA!=10) )){
         VITORIA=0;
         acerto=0;
-        //quarta parte: inicio do jogo
 		cout<<"Digite uma letra: ";
 		cin>>letra;
 		for(int i=0; i<tamanho_palavra; i++){
-			if(letra==palavra_selecionada[i]){
-               vetor_auxiliar[i]=palavra_selecionada[i];
+			if(letra==strring_que_vira_cchar[i]){
+               vetor_auxiliar[i]=strring_que_vira_cchar[i];
                acerto++;
 			}
 		}
@@ -181,11 +109,11 @@ int jogabilidade(int TENTATIVAS, int VITORIA, int tamanho_palavra, string name_u
         }
         cout<<"\n\n";
 		for(int i=0; i<tamanho_palavra; i++){
-			cout<<vetor_auxiliar[i];
+			cout<<vetor_auxiliar[i]<<" ";
 		}
 		cout<<"\n\n";
 		for(int i=0; i<tamanho_palavra; i++){
-            if(vetor_auxiliar[i]==palavra_selecionada[i]){
+            if(vetor_auxiliar[i]==strring_que_vira_cchar[i]){
                 VITORIA++;
             }
 		}
